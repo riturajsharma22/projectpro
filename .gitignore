@@ -1,0 +1,21 @@
+# Data files: too large for GitHub, and reproducible from make_subset.py
+data/
+*.csv
+*.zip
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+*.tfvars
+!*.tfvars.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Local
+.DS_Store
+Thumbs.db

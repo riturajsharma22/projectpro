@@ -1,0 +1,560 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+
+Terraform will perform the following actions:
+
+  # azurerm_data_factory.main will be created
+  + resource "azurerm_data_factory" "main" {
+      + customer_managed_key_id          = (known after apply)
+      + customer_managed_key_identity_id = (known after apply)
+      + id                               = (known after apply)
+      + location                         = "centralindia"
+      + name                             = (known after apply)
+      + public_network_enabled           = true
+      + resource_group_name              = "rg-medallion-water-tf"
+      + tags                             = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+
+      + identity {
+          + principal_id = (known after apply)
+          + tenant_id    = (known after apply)
+          + type         = "SystemAssigned"
+        }
+    }
+
+  # azurerm_data_factory_linked_service_azure_blob_storage.blob will be created
+  + resource "azurerm_data_factory_linked_service_azure_blob_storage" "blob" {
+      + connection_string    = (sensitive value)
+      + data_factory_id      = (known after apply)
+      + id                   = (known after apply)
+      + name                 = "ls_blob_raw"
+      + use_managed_identity = false
+
+      + key_vault_sas_token (known after apply)
+
+      + sas_token_linked_key_vault_key (known after apply)
+    }
+
+  # azurerm_data_factory_linked_service_data_lake_storage_gen2.lake will be created
+  + resource "azurerm_data_factory_linked_service_data_lake_storage_gen2" "lake" {
+      + data_factory_id      = (known after apply)
+      + id                   = (known after apply)
+      + name                 = "ls_adls"
+      + storage_account_key  = (sensitive value)
+      + url                  = (known after apply)
+      + use_managed_identity = false
+    }
+
+  # azurerm_databricks_workspace.main will be created
+  + resource "azurerm_databricks_workspace" "main" {
+      + customer_managed_key_enabled      = false
+      + disk_encryption_set_id            = (known after apply)
+      + id                                = (known after apply)
+      + infrastructure_encryption_enabled = false
+      + location                          = "centralindia"
+      + managed_disk_identity             = (known after apply)
+      + managed_resource_group_id         = (known after apply)
+      + managed_resource_group_name       = (known after apply)
+      + name                              = (known after apply)
+      + public_network_access_enabled     = true
+      + resource_group_name               = "rg-medallion-water-tf"
+      + sku                               = "trial"
+      + storage_account_identity          = (known after apply)
+      + tags                              = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+      + workspace_id                      = (known after apply)
+      + workspace_url                     = (known after apply)
+
+      + custom_parameters (known after apply)
+    }
+
+  # azurerm_logic_app_trigger_recurrence.weekly will be created
+  + resource "azurerm_logic_app_trigger_recurrence" "weekly" {
+      + frequency    = "Week"
+      + id           = (known after apply)
+      + interval     = 1
+      + logic_app_id = (known after apply)
+      + name         = "Recurrence"
+      + time_zone    = (known after apply)
+    }
+
+  # azurerm_logic_app_workflow.sql_to_blob will be created
+  + resource "azurerm_logic_app_workflow" "sql_to_blob" {
+      + access_endpoint                 = (known after apply)
+      + connector_endpoint_ip_addresses = (known after apply)
+      + connector_outbound_ip_addresses = (known after apply)
+      + enabled                         = true
+      + id                              = (known after apply)
+      + location                        = "centralindia"
+      + name                            = (known after apply)
+      + resource_group_name             = "rg-medallion-water-tf"
+      + tags                            = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+      + workflow_endpoint_ip_addresses  = (known after apply)
+      + workflow_outbound_ip_addresses  = (known after apply)
+      + workflow_schema                 = "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#"
+      + workflow_version                = "1.0.0.0"
+    }
+
+  # azurerm_mssql_database.main will be created
+  + resource "azurerm_mssql_database" "main" {
+      + auto_pause_delay_in_minutes                                = (known after apply)
+      + collation                                                  = (known after apply)
+      + create_mode                                                = "Default"
+      + creation_source_database_id                                = (known after apply)
+      + enclave_type                                               = (known after apply)
+      + geo_backup_enabled                                         = true
+      + id                                                         = (known after apply)
+      + ledger_enabled                                             = (known after apply)
+      + license_type                                               = (known after apply)
+      + maintenance_configuration_name                             = (known after apply)
+      + max_size_gb                                                = 32
+      + min_capacity                                               = (known after apply)
+      + name                                                       = "sqldb-water-quality"
+      + read_replica_count                                         = (known after apply)
+      + read_scale                                                 = (known after apply)
+      + restore_point_in_time                                      = (known after apply)
+      + sample_name                                                = (known after apply)
+      + secondary_type                                             = (known after apply)
+      + server_id                                                  = (known after apply)
+      + sku_name                                                   = "GP_S_Gen5_2"
+      + storage_account_type                                       = "Local"
+      + tags                                                       = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+      + transparent_data_encryption_enabled                        = true
+      + transparent_data_encryption_key_automatic_rotation_enabled = false
+      + zone_redundant                                             = false
+
+      + long_term_retention_policy (known after apply)
+
+      + short_term_retention_policy (known after apply)
+
+      + threat_detection_policy (known after apply)
+    }
+
+  # azurerm_mssql_firewall_rule.azure_services will be created
+  + resource "azurerm_mssql_firewall_rule" "azure_services" {
+      + end_ip_address   = "0.0.0.0"
+      + id               = (known after apply)
+      + name             = "AllowAzureServices"
+      + server_id        = (known after apply)
+      + start_ip_address = "0.0.0.0"
+    }
+
+  # azurerm_mssql_firewall_rule.client will be created
+  + resource "azurerm_mssql_firewall_rule" "client" {
+      + end_ip_address   = "135.13.134.73"
+      + id               = (known after apply)
+      + name             = "ClientIP"
+      + server_id        = (known after apply)
+      + start_ip_address = "135.13.134.73"
+    }
+
+  # azurerm_mssql_server.main will be created
+  + resource "azurerm_mssql_server" "main" {
+      + administrator_login                      = "rituadmin"
+      + administrator_login_password             = (sensitive value)
+      + administrator_login_password_wo          = (write-only attribute)
+      + connection_policy                        = "Default"
+      + express_vulnerability_assessment_enabled = false
+      + fully_qualified_domain_name              = (known after apply)
+      + id                                       = (known after apply)
+      + location                                 = "centralindia"
+      + minimum_tls_version                      = "1.2"
+      + name                                     = (known after apply)
+      + outbound_network_restriction_enabled     = false
+      + primary_user_assigned_identity_id        = (known after apply)
+      + public_network_access_enabled            = true
+      + resource_group_name                      = "rg-medallion-water-tf"
+      + restorable_dropped_database_ids          = (known after apply)
+      + tags                                     = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+      + version                                  = "12.0"
+    }
+
+  # azurerm_resource_group.main will be created
+  + resource "azurerm_resource_group" "main" {
+      + id       = (known after apply)
+      + location = "centralindia"
+      + name     = "rg-medallion-water-tf"
+      + tags     = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+    }
+
+  # azurerm_storage_account.blob will be created
+  + resource "azurerm_storage_account" "blob" {
+      + access_tier                        = (known after apply)
+      + account_kind                       = "StorageV2"
+      + account_replication_type           = "LRS"
+      + account_tier                       = "Standard"
+      + allow_nested_items_to_be_public    = true
+      + cross_tenant_replication_enabled   = false
+      + default_to_oauth_authentication    = false
+      + dns_endpoint_type                  = "Standard"
+      + https_traffic_only_enabled         = true
+      + id                                 = (known after apply)
+      + infrastructure_encryption_enabled  = false
+      + is_hns_enabled                     = false
+      + large_file_share_enabled           = (known after apply)
+      + local_user_enabled                 = true
+      + location                           = "centralindia"
+      + min_tls_version                    = "TLS1_2"
+      + name                               = (known after apply)
+      + nfsv3_enabled                      = false
+      + primary_access_key                 = (sensitive value)
+      + primary_blob_connection_string     = (sensitive value)
+      + primary_blob_endpoint              = (known after apply)
+      + primary_blob_host                  = (known after apply)
+      + primary_blob_internet_endpoint     = (known after apply)
+      + primary_blob_internet_host         = (known after apply)
+      + primary_blob_microsoft_endpoint    = (known after apply)
+      + primary_blob_microsoft_host        = (known after apply)
+      + primary_connection_string          = (sensitive value)
+      + primary_dfs_endpoint               = (known after apply)
+      + primary_dfs_host                   = (known after apply)
+      + primary_dfs_internet_endpoint      = (known after apply)
+      + primary_dfs_internet_host          = (known after apply)
+      + primary_dfs_microsoft_endpoint     = (known after apply)
+      + primary_dfs_microsoft_host         = (known after apply)
+      + primary_file_endpoint              = (known after apply)
+      + primary_file_host                  = (known after apply)
+      + primary_file_internet_endpoint     = (known after apply)
+      + primary_file_internet_host         = (known after apply)
+      + primary_file_microsoft_endpoint    = (known after apply)
+      + primary_file_microsoft_host        = (known after apply)
+      + primary_location                   = (known after apply)
+      + primary_queue_endpoint             = (known after apply)
+      + primary_queue_host                 = (known after apply)
+      + primary_queue_microsoft_endpoint   = (known after apply)
+      + primary_queue_microsoft_host       = (known after apply)
+      + primary_table_endpoint             = (known after apply)
+      + primary_table_host                 = (known after apply)
+      + primary_table_microsoft_endpoint   = (known after apply)
+      + primary_table_microsoft_host       = (known after apply)
+      + primary_web_endpoint               = (known after apply)
+      + primary_web_host                   = (known after apply)
+      + primary_web_internet_endpoint      = (known after apply)
+      + primary_web_internet_host          = (known after apply)
+      + primary_web_microsoft_endpoint     = (known after apply)
+      + primary_web_microsoft_host         = (known after apply)
+      + public_network_access_enabled      = true
+      + queue_encryption_key_type          = "Service"
+      + resource_group_name                = "rg-medallion-water-tf"
+      + secondary_access_key               = (sensitive value)
+      + secondary_blob_connection_string   = (sensitive value)
+      + secondary_blob_endpoint            = (known after apply)
+      + secondary_blob_host                = (known after apply)
+      + secondary_blob_internet_endpoint   = (known after apply)
+      + secondary_blob_internet_host       = (known after apply)
+      + secondary_blob_microsoft_endpoint  = (known after apply)
+      + secondary_blob_microsoft_host      = (known after apply)
+      + secondary_connection_string        = (sensitive value)
+      + secondary_dfs_endpoint             = (known after apply)
+      + secondary_dfs_host                 = (known after apply)
+      + secondary_dfs_internet_endpoint    = (known after apply)
+      + secondary_dfs_internet_host        = (known after apply)
+      + secondary_dfs_microsoft_endpoint   = (known after apply)
+      + secondary_dfs_microsoft_host       = (known after apply)
+      + secondary_file_endpoint            = (known after apply)
+      + secondary_file_host                = (known after apply)
+      + secondary_file_internet_endpoint   = (known after apply)
+      + secondary_file_internet_host       = (known after apply)
+      + secondary_file_microsoft_endpoint  = (known after apply)
+      + secondary_file_microsoft_host      = (known after apply)
+      + secondary_location                 = (known after apply)
+      + secondary_queue_endpoint           = (known after apply)
+      + secondary_queue_host               = (known after apply)
+      + secondary_queue_microsoft_endpoint = (known after apply)
+      + secondary_queue_microsoft_host     = (known after apply)
+      + secondary_table_endpoint           = (known after apply)
+      + secondary_table_host               = (known after apply)
+      + secondary_table_microsoft_endpoint = (known after apply)
+      + secondary_table_microsoft_host     = (known after apply)
+      + secondary_web_endpoint             = (known after apply)
+      + secondary_web_host                 = (known after apply)
+      + secondary_web_internet_endpoint    = (known after apply)
+      + secondary_web_internet_host        = (known after apply)
+      + secondary_web_microsoft_endpoint   = (known after apply)
+      + secondary_web_microsoft_host       = (known after apply)
+      + sftp_enabled                       = false
+      + shared_access_key_enabled          = true
+      + table_encryption_key_type          = "Service"
+      + tags                               = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+
+      + blob_properties (known after apply)
+
+      + network_rules (known after apply)
+
+      + queue_properties (known after apply)
+
+      + routing (known after apply)
+
+      + share_properties (known after apply)
+
+      + static_website (known after apply)
+    }
+
+  # azurerm_storage_account.lake will be created
+  + resource "azurerm_storage_account" "lake" {
+      + access_tier                        = (known after apply)
+      + account_kind                       = "StorageV2"
+      + account_replication_type           = "LRS"
+      + account_tier                       = "Standard"
+      + allow_nested_items_to_be_public    = true
+      + cross_tenant_replication_enabled   = false
+      + default_to_oauth_authentication    = false
+      + dns_endpoint_type                  = "Standard"
+      + https_traffic_only_enabled         = true
+      + id                                 = (known after apply)
+      + infrastructure_encryption_enabled  = false
+      + is_hns_enabled                     = true
+      + large_file_share_enabled           = (known after apply)
+      + local_user_enabled                 = true
+      + location                           = "centralindia"
+      + min_tls_version                    = "TLS1_2"
+      + name                               = (known after apply)
+      + nfsv3_enabled                      = false
+      + primary_access_key                 = (sensitive value)
+      + primary_blob_connection_string     = (sensitive value)
+      + primary_blob_endpoint              = (known after apply)
+      + primary_blob_host                  = (known after apply)
+      + primary_blob_internet_endpoint     = (known after apply)
+      + primary_blob_internet_host         = (known after apply)
+      + primary_blob_microsoft_endpoint    = (known after apply)
+      + primary_blob_microsoft_host        = (known after apply)
+      + primary_connection_string          = (sensitive value)
+      + primary_dfs_endpoint               = (known after apply)
+      + primary_dfs_host                   = (known after apply)
+      + primary_dfs_internet_endpoint      = (known after apply)
+      + primary_dfs_internet_host          = (known after apply)
+      + primary_dfs_microsoft_endpoint     = (known after apply)
+      + primary_dfs_microsoft_host         = (known after apply)
+      + primary_file_endpoint              = (known after apply)
+      + primary_file_host                  = (known after apply)
+      + primary_file_internet_endpoint     = (known after apply)
+      + primary_file_internet_host         = (known after apply)
+      + primary_file_microsoft_endpoint    = (known after apply)
+      + primary_file_microsoft_host        = (known after apply)
+      + primary_location                   = (known after apply)
+      + primary_queue_endpoint             = (known after apply)
+      + primary_queue_host                 = (known after apply)
+      + primary_queue_microsoft_endpoint   = (known after apply)
+      + primary_queue_microsoft_host       = (known after apply)
+      + primary_table_endpoint             = (known after apply)
+      + primary_table_host                 = (known after apply)
+      + primary_table_microsoft_endpoint   = (known after apply)
+      + primary_table_microsoft_host       = (known after apply)
+      + primary_web_endpoint               = (known after apply)
+      + primary_web_host                   = (known after apply)
+      + primary_web_internet_endpoint      = (known after apply)
+      + primary_web_internet_host          = (known after apply)
+      + primary_web_microsoft_endpoint     = (known after apply)
+      + primary_web_microsoft_host         = (known after apply)
+      + public_network_access_enabled      = true
+      + queue_encryption_key_type          = "Service"
+      + resource_group_name                = "rg-medallion-water-tf"
+      + secondary_access_key               = (sensitive value)
+      + secondary_blob_connection_string   = (sensitive value)
+      + secondary_blob_endpoint            = (known after apply)
+      + secondary_blob_host                = (known after apply)
+      + secondary_blob_internet_endpoint   = (known after apply)
+      + secondary_blob_internet_host       = (known after apply)
+      + secondary_blob_microsoft_endpoint  = (known after apply)
+      + secondary_blob_microsoft_host      = (known after apply)
+      + secondary_connection_string        = (sensitive value)
+      + secondary_dfs_endpoint             = (known after apply)
+      + secondary_dfs_host                 = (known after apply)
+      + secondary_dfs_internet_endpoint    = (known after apply)
+      + secondary_dfs_internet_host        = (known after apply)
+      + secondary_dfs_microsoft_endpoint   = (known after apply)
+      + secondary_dfs_microsoft_host       = (known after apply)
+      + secondary_file_endpoint            = (known after apply)
+      + secondary_file_host                = (known after apply)
+      + secondary_file_internet_endpoint   = (known after apply)
+      + secondary_file_internet_host       = (known after apply)
+      + secondary_file_microsoft_endpoint  = (known after apply)
+      + secondary_file_microsoft_host      = (known after apply)
+      + secondary_location                 = (known after apply)
+      + secondary_queue_endpoint           = (known after apply)
+      + secondary_queue_host               = (known after apply)
+      + secondary_queue_microsoft_endpoint = (known after apply)
+      + secondary_queue_microsoft_host     = (known after apply)
+      + secondary_table_endpoint           = (known after apply)
+      + secondary_table_host               = (known after apply)
+      + secondary_table_microsoft_endpoint = (known after apply)
+      + secondary_table_microsoft_host     = (known after apply)
+      + secondary_web_endpoint             = (known after apply)
+      + secondary_web_host                 = (known after apply)
+      + secondary_web_internet_endpoint    = (known after apply)
+      + secondary_web_internet_host        = (known after apply)
+      + secondary_web_microsoft_endpoint   = (known after apply)
+      + secondary_web_microsoft_host       = (known after apply)
+      + sftp_enabled                       = false
+      + shared_access_key_enabled          = true
+      + table_encryption_key_type          = "Service"
+      + tags                               = {
+          + "environment" = "dev"
+          + "managed_by"  = "terraform"
+          + "project"     = "medallion-water"
+        }
+
+      + blob_properties (known after apply)
+
+      + network_rules (known after apply)
+
+      + queue_properties (known after apply)
+
+      + routing (known after apply)
+
+      + share_properties (known after apply)
+
+      + static_website (known after apply)
+    }
+
+  # azurerm_storage_container.blob_containers["raw-export"] will be created
+  + resource "azurerm_storage_container" "blob_containers" {
+      + container_access_type             = "private"
+      + default_encryption_scope          = (known after apply)
+      + encryption_scope_override_enabled = true
+      + has_immutability_policy           = (known after apply)
+      + has_legal_hold                    = (known after apply)
+      + id                                = (known after apply)
+      + metadata                          = (known after apply)
+      + name                              = "raw-export"
+      + resource_manager_id               = (known after apply)
+      + storage_account_id                = (known after apply)
+      + url                               = (known after apply)
+    }
+
+  # azurerm_storage_container.blob_containers["source-upload"] will be created
+  + resource "azurerm_storage_container" "blob_containers" {
+      + container_access_type             = "private"
+      + default_encryption_scope          = (known after apply)
+      + encryption_scope_override_enabled = true
+      + has_immutability_policy           = (known after apply)
+      + has_legal_hold                    = (known after apply)
+      + id                                = (known after apply)
+      + metadata                          = (known after apply)
+      + name                              = "source-upload"
+      + resource_manager_id               = (known after apply)
+      + storage_account_id                = (known after apply)
+      + url                               = (known after apply)
+    }
+
+  # azurerm_storage_container.lake_containers["bronze"] will be created
+  + resource "azurerm_storage_container" "lake_containers" {
+      + container_access_type             = "private"
+      + default_encryption_scope          = (known after apply)
+      + encryption_scope_override_enabled = true
+      + has_immutability_policy           = (known after apply)
+      + has_legal_hold                    = (known after apply)
+      + id                                = (known after apply)
+      + metadata                          = (known after apply)
+      + name                              = "bronze"
+      + resource_manager_id               = (known after apply)
+      + storage_account_id                = (known after apply)
+      + url                               = (known after apply)
+    }
+
+  # azurerm_storage_container.lake_containers["gold"] will be created
+  + resource "azurerm_storage_container" "lake_containers" {
+      + container_access_type             = "private"
+      + default_encryption_scope          = (known after apply)
+      + encryption_scope_override_enabled = true
+      + has_immutability_policy           = (known after apply)
+      + has_legal_hold                    = (known after apply)
+      + id                                = (known after apply)
+      + metadata                          = (known after apply)
+      + name                              = "gold"
+      + resource_manager_id               = (known after apply)
+      + storage_account_id                = (known after apply)
+      + url                               = (known after apply)
+    }
+
+  # azurerm_storage_container.lake_containers["landing"] will be created
+  + resource "azurerm_storage_container" "lake_containers" {
+      + container_access_type             = "private"
+      + default_encryption_scope          = (known after apply)
+      + encryption_scope_override_enabled = true
+      + has_immutability_policy           = (known after apply)
+      + has_legal_hold                    = (known after apply)
+      + id                                = (known after apply)
+      + metadata                          = (known after apply)
+      + name                              = "landing"
+      + resource_manager_id               = (known after apply)
+      + storage_account_id                = (known after apply)
+      + url                               = (known after apply)
+    }
+
+  # azurerm_storage_container.lake_containers["silver"] will be created
+  + resource "azurerm_storage_container" "lake_containers" {
+      + container_access_type             = "private"
+      + default_encryption_scope          = (known after apply)
+      + encryption_scope_override_enabled = true
+      + has_immutability_policy           = (known after apply)
+      + has_legal_hold                    = (known after apply)
+      + id                                = (known after apply)
+      + metadata                          = (known after apply)
+      + name                              = "silver"
+      + resource_manager_id               = (known after apply)
+      + storage_account_id                = (known after apply)
+      + url                               = (known after apply)
+    }
+
+  # random_string.suffix will be created
+  + resource "random_string" "suffix" {
+      + id          = (known after apply)
+      + length      = 5
+      + lower       = true
+      + min_lower   = 0
+      + min_numeric = 0
+      + min_special = 0
+      + min_upper   = 0
+      + number      = true
+      + numeric     = true
+      + result      = (known after apply)
+      + special     = false
+      + upper       = false
+    }
+
+Plan: 20 to add, 0 to change, 0 to destroy.
+
+Changes to Outputs:
+  + blob_account             = (known after apply)
+  + data_factory             = (known after apply)
+  + databricks_workspace_url = (known after apply)
+  + lake_account             = (known after apply)
+  + lake_landing_path        = (known after apply)
+  + logic_app                = (known after apply)
+  + resource_group           = "rg-medallion-water-tf"
+  + sql_database             = "sqldb-water-quality"
+  + sql_server_fqdn          = (known after apply)
+
+─────────────────────────────────────────────────────────────────────────────
+
+Note: You didn't use the -out option to save this plan, so Terraform can't
+guarantee to take exactly these actions if you run "terraform apply" now.

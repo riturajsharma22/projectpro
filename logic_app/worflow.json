@@ -1,0 +1,139 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "contentVersion": "1.0.0.0",
+        "triggers": {
+            "Recurrence": {
+                "recurrence": {
+                    "frequency": "Week",
+                    "interval": 1
+                },
+                "evaluatedRecurrence": {
+                    "frequency": "Week",
+                    "interval": 1
+                },
+                "type": "Recurrence"
+            }
+        },
+        "actions": {
+            "For_each": {
+                "foreach": "@range(0, variables('BatchCount'))",
+                "actions": {
+                    "Create_CSV_table": {
+                        "runAfter": {
+                            "Execute_a_SQL_query_(V2)": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "Table",
+                        "inputs": {
+                            "from": "@   body('Execute_a_SQL_query_(V2)')?['ResultSets']?['Table1']",
+                            "format": "CSV"
+                        }
+                    },
+                    "Execute_a_SQL_query_(V2)": {
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['sql']['connectionId']"
+                                }
+                            },
+                            "method": "post",
+                            "body": {
+                                "query": "SELECT * FROM dbo.water_quality ORDER BY UID OFFSET @{mul(items('For_each'), variables('BatchSize'))} ROWS FETCH NEXT @{variables('BatchSize')} ROWS ONLY"
+                            },
+                            "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('default'))},@{encodeURIComponent(encodeURIComponent('default'))}/query/sql"
+                        }
+                    },
+                    "Create_blob_(V2)": {
+                        "runAfter": {
+                            "Create_CSV_table": [
+                                "Succeeded"
+                            ]
+                        },
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "name": "@parameters('$connections')['azureblob']['connectionId']"
+                                }
+                            },
+                            "method": "post",
+                            "body": "@body('Create_CSV_table')",
+                            "headers": {
+                                "ReadFileMetadataFromServer": true
+                            },
+                            "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files",
+                            "queries": {
+                                "folderPath": "/raw-export",
+                                "name": "@   concat('water_quality_part_', formatNumber(items('For_each'), '000'), '.csv')",
+                                "queryParametersSingleEncoded": true
+                            }
+                        },
+                        "runtimeConfiguration": {
+                            "contentTransfer": {
+                                "transferMode": "Chunked"
+                            }
+                        }
+                    }
+                },
+                "runAfter": {
+                    "Initialize_BatchCount": [
+                        "Succeeded"
+                    ]
+                },
+                "type": "Foreach",
+                "runtimeConfiguration": {
+                    "concurrency": {
+                        "repetitions": 4
+                    }
+                }
+            },
+            "Initialize_BatchCount": {
+                "runAfter": {},
+                "type": "InitializeVariable",
+                "inputs": {
+                    "variables": [
+                        {
+                            "name": "BatchSize",
+                            "type": "integer",
+                            "value": 20000
+                        },
+                        {
+                            "name": "BatchCount",
+                            "type": "integer",
+                            "value": 59
+                        }
+                    ]
+                }
+            }
+        },
+        "outputs": {},
+        "parameters": {
+            "$connections": {
+                "type": "Object",
+                "defaultValue": {}
+            }
+        }
+    },
+    "parameters": {
+        "$connections": {
+            "type": "Object",
+            "value": {
+                "sql": {
+                    "id": "/subscriptions/e82d3c92-a602-429c-8052-0fb6f5ca4e23/providers/Microsoft.Web/locations/centralindia/managedApis/sql",
+                    "connectionId": "/subscriptions/e82d3c92-a602-429c-8052-0fb6f5ca4e23/resourceGroups/rg-medallion-water/providers/Microsoft.Web/connections/sql",
+                    "connectionName": "sql",
+                    "connectionProperties": {}
+                },
+                "azureblob": {
+                    "id": "/subscriptions/e82d3c92-a602-429c-8052-0fb6f5ca4e23/providers/Microsoft.Web/locations/centralindia/managedApis/azureblob",
+                    "connectionId": "/subscriptions/e82d3c92-a602-429c-8052-0fb6f5ca4e23/resourceGroups/rg-medallion-water/providers/Microsoft.Web/connections/azureblob",
+                    "connectionName": "azureblob",
+                    "connectionProperties": {}
+                }
+            }
+        }
+    }
+}
