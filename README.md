@@ -85,16 +85,12 @@ maximum) add back to 14,631 exactly.
 ├── logic_app/workflow.json    export workflow (trigger, loop, SQL, blob)
 ├── adf/                       pipeline and dataset definitions
 ├── notebooks/
-│   ├── 00_test_connection.py
+│   ├── test_connection.py
 │   ├── 01_bronze.py
 │   ├── 02_silver.py
 │   └── 03_gold.py
 ├── terraform/                 the environment as code (see terraform/README.md)
 └── docs/
-    ├── A_data_and_ingestion.pdf     source data through to the lake
-    ├── 01_bronze.pdf / 02_silver.pdf / 03_gold.pdf
-    ├── B_terraform.pdf              infrastructure as code
-    ├── Medallion_Full_Documentation.pdf
     ├── data_profile.md              columns and known data problems
     └── dashboard.pdf                exported dashboard
 ```
